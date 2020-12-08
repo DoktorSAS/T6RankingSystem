@@ -1,2 +1,11 @@
-# T6-Ranking-System
-On Plutonium T6 there is no real ranking system then this project will create a ranking system for Black Ops II Plutonium servers.
+# Plutonium T6 Ranking System
+
+description
+
+#### Developers
+| Username | Role  |
+|:----------|-------|
+| DoktorSAS | Mod & Plugin Dev |
+| mikzyy | Mod & Plugin Dev |
+
+## Guide
