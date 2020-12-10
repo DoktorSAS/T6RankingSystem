@@ -16,5 +16,5 @@ to server owners, they can modify the ranking system by deciding how much weight
 ### GSC Mod
 The accumulated experience is collected in a variable generated for this eventuality
 ```
-  self.pers["xp_ranking"] = xp;
+  self.pers["xp_ranking"] = self.pers["xp_ranking"] + xp;
 ```
