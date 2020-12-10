@@ -12,3 +12,9 @@ to server owners, they can modify the ranking system by deciding how much weight
 - IW4M Plugin
 - GSC Mod files
 - CFG files
+
+### GSC Mod
+The accumulated experience is collected in a variable generated for this eventuality
+```
+  self.pers["xp_ranking"] = xp;
+```
