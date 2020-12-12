@@ -2,6 +2,10 @@
 #include common_scripts/utility;
 #include maps/mp/zombies/_zm_utility;
 #include maps/mp/zombies/_zm;
+#include maps/mp/gametypes_zm/_hud;
+#include maps/mp/gametypes_zm/_hud_util;
+#include maps/mp/gametypes_zm/_hud_message;
+
 
 init()
 {
@@ -9,6 +13,8 @@ init()
     level thread on_player_connect();
     level thread add_xp_based_on_time_played();
     level thread add_xp_based_on_rounds_beaten();
+    level thread add_xp_for_opened_doors();
+    level thread add_xp_for_opened_debris();
 }
 
 on_player_connect()
@@ -58,15 +64,12 @@ custom_actor_damage_override_wrapper( inflictor, attacker, damage, flags, meanso
 	damage_override = self actor_damage_override( inflictor, attacker, damage, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex );
 	if ( ( self.health - damage_override ) > 0 )
 	{
-		print_to_all("No kill");
 		self finishactordamage( inflictor, attacker, damage_override, flags, meansofdeath, weapon, vpoint, vdir, shitloc, psoffsettime, boneindex );
 	}
 	else
 	{
-		print_to_all("kill");
         if ( isDefined(attacker)  && isDefined(attacker.pers[ "xp_ranking" ]))
         {
-        	print_to_all("points");
             attacker.pers[ "xp_ranking" ] += getDvarInt( "xp_for_kill" );
             if ( meansofdeath == "MOD_MELEE" )
             {
@@ -121,4 +124,64 @@ add_xp_on_power_on()
     xp = getDvarInt("turn_on_power");
     foreach(player in level.players)
         player.pers[ "xp_ranking" ] += xp;
+}
+
+add_xp_for_opened_debris()
+{
+    debris_trigs = getentarray( "zombie_debris", "targetname" );
+    foreach ( debris_trig in debris_trigs )
+    {
+    	 debris_trig thread watch_for_open_door();
+    }
+}
+
+add_xp_for_opened_doors()
+{
+    zombie_doors = getentarray( "zombie_door", "targetname" );
+    foreach ( zombie_door in zombie_doors )
+    {
+    	zombie_door thread watch_for_open_door();
+    }
+}
+
+watch_for_open_door()
+{
+    level endon( "end_game" );
+    while ( true )
+    {
+        self waittill( "trigger", who, force );
+        if ( isDefined( level.custom_door_buy_check ) )
+        {
+            if ( !who [[ level.custom_door_buy_check ]]( self ) )
+            {
+                continue;
+            }
+        }
+        if ( getDvarInt( "zombie_unlock_all" ) > 0 || isDefined( force ) && force )
+        {
+            continue;
+        }
+        if ( !who usebuttonpressed() )
+        {
+            continue;
+        }
+        if ( who maps/mp/zombies/_zm_utility::in_revive_trigger() )
+        {
+            continue;
+        }
+        if ( maps/mp/zombies/_zm_utility::is_player_valid( who ) )
+        {
+            cost = self.zombie_cost;
+            if ( who.score >= cost )
+            {
+                xp = getDvarInt( "xp_for_open_door" );
+                who.pers[ "xp_ranking" ] += xp;
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
 }
