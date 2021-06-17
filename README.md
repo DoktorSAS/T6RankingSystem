@@ -7,6 +7,5 @@ This system will allow new users to learn from older users and will allow users 
 | Username | Role  |
 |:----------|-------|
 | DoktorSAS | Mod & Plugin Dev |
-| [mikzyy](https://github.com/mikzyy) | Mod & Plugin Dev |
 | [JezuzLizard](https://github.com/JezuzLizard)| Mod |
 
